@@ -3,9 +3,30 @@
   <head>
     <meta charset="UTF-8">
     <title>webpack2之html模板</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      *{padding: 0; margin: 0;}
+      #handlock{position: relative; width: 300px; height: 300px; background-color: #989898;}
+      #handlock .row{width: 100%; height: 100px;}
+      #handlock .column{position: relative; display: inline-block; width: 33%; height: 100%;}
+      #handlock .dock{position: absolute; width: 30px; height: 30px; border-radius: 50%; background-color: #fff; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+      #handlock .dock.chosen{background-color: #f00;}
+      #handlock .line{height: 4px; background-color: yellow; position: absolute; z-index: 999;}
+    </style>
   </head>
   <body>
-    <img id="naruto" src="app/img/naruto.gif" alt="">
-    <img id="chutian" src="app/img/chutian.gif" alt="">
+    <div class="wrapper">
+      <div id="handlock">
+        <!--<div class="row">
+          <div class="column">
+            <span class="dock"></span>
+          </div>
+          <div class="column"></div>
+          <div class="column"></div>
+        </div>
+        <div class="row"></div>
+        <div class="row"></div>-->
+      </div>
+    </div>
   </body>
 </html>

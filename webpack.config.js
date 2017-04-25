@@ -20,7 +20,7 @@ module.exports = {
   entry: {
     // vendor: ['jquery', 'bootstrap'],
     app: ['webpack-hot-middleware/client?reload=true', './app/js/main.js'],
-    app2: './app/js/main2.js'
+    // app2: './app/js/main2.js'
   },
   output: {
     path: __dirname + '/build',
