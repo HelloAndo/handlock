@@ -31,29 +31,32 @@ class Lock {
   eventHandler () {
     let self = this
     let $area = $(this.opts.el)
-    let startX, startY;
-    let $line = $('<div class="line"></div>')
+    // let startX, startY;
+    // let $ray = $('<div class="line"></div>')
+    this.createRay()
     $area.on('touchstart', function (e) {
-      startX = e.originalEvent.targetTouches[0].clientX
-      startY = e.originalEvent.targetTouches[0].clientY
-      $area.append($line)
+      self.startX = e.originalEvent.targetTouches[0].clientX
+      self.startY = e.originalEvent.targetTouches[0].clientY
+      console.log(self.startX)
+      console.log(self.startY)
+      $area.append(self.$ray)
     })
     $area.on('touchmove', function (e) {
       // let fx = e.originalEvent.targetTouches[0].clientX
       // let fy = e.originalEvent.targetTouches[0].clientY
-      // self.drawLine(e.originalEvent.targetTouches[0], $line)
+      // self.drawLine(e.originalEvent.targetTouches[0], $ray)
       let axis = e.originalEvent.targetTouches[0]
-      let diffX = axis.clientX - startX,
-          diffY = axis.clientY - startY;
+      let diffX = axis.clientX - self.startX,
+          diffY = axis.clientY - self.startY;
       let dist = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2))
       let tan = Math.atan(diffY / diffX)
-      let deg = Math.floor(180/(Math.PI/tan))
-      $line.css({
+      let deg = Math.abs(Math.floor(180/(Math.PI/tan)))
+      self.$ray.css({
+        'transform-origin': '0 50%',
         'transform': 'rotate(' + deg + 'deg)',
-        'transform-origin': startX + ' ' + startY,
         'width': dist + 'px',
-        left: startX,
-        top: startY
+        left: self.startX,
+        top: self.startY
       })
 
 
@@ -62,6 +65,7 @@ class Lock {
         if (self.pass.indexOf(location) < 0) {
           self.pass.push(location)
           $area.find('.dock').eq(location - 1).addClass('chosen')
+          self.pass.length > 1 && self.saveLine()
         }
         console.log(self.pass)
       }
@@ -70,12 +74,48 @@ class Lock {
       self.pass = []
     })
   }
-  // drawLine (axis, $line) {
+  createRay () {
+    this.$ray = $('<div class="line"></div>')
+    this.$ray.css({
+      'transform-origin': '0 50%'
+    })
+  }
+  saveLine () {
+    let start = this.pass[this.pass.length - 2],
+        end = this.pass[this.pass.length - 1];
+    let startTop = Math.floor(start / this.opts.num) * this.opts.boxWidth + this.opts.boxWidth / 2,
+        startLeft = (start % this.opts.num ? start % this.opts.num : this.opts.num) * this.opts.boxWidth - this.opts.boxWidth / 2;
+    let endTop = Math.floor(end / this.opts.num) * this.opts.boxWidth + this.opts.boxWidth / 2,
+        endLeft = (end % this.opts.num ? end % this.opts.num : this.opts.num) * this.opts.boxWidth - this.opts.boxWidth / 2;
+    let diffX = endLeft - startLeft,
+        diffY = endTop - startTop; 
+
+    let dist = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2))
+    let tan = Math.atan(diffY / diffX)
+    let deg = Math.abs(Math.floor(180/(Math.PI/tan)))
+
+    let $line = $('<div class="line"></div>')
+    $line.css({
+      'transform-origin': '0 50%',
+      'transform': 'rotate(' + deg + 'deg)',
+      'width': dist + 'px',
+      left: startLeft,
+      top: startTop
+    })
+    $(this.opts.el).append($line)
+    this.startX = endLeft;
+    this.startY = endTop;
+    this.$ray.css({
+      left: endLeft,
+      top: endTop
+    })
+  }
+  // drawLine (axis, $ray) {
   //   let diffX = axis.clientX - startX,
   //       diffY = axis.clientY - startY;
   //   let dist = Math.sqrt(Math.pow(diffX) + Math.pow(diffY))
   //   let deg = Math.atan(diffY / diffX)
-  //   $line.css('transform', 'rotate(' + deg + ')')
+  //   $ray.css('transform', 'rotate(' + deg + ')')
   // }
   isTouch (location) {
     let col = Math.ceil(location.clientX / this.opts.boxWidth)
